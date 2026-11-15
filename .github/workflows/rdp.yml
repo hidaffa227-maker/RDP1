@@ -20,13 +20,9 @@ jobs:
           Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
           Expand-Archive ngrok.zip -DestinationPath ngrok
           .\ngrok\ngrok.exe authtoken 3M84hKRIgcYURRfKWcsqJTGRJjv_2N8M6XUMBnmeHKVDuiAfD
-          Start-Process -FilePath ".\ngrok\ngrok.exe" -ArgumentList "tcp 3389" -RedirectStandardOutput "ngrok.log" -RedirectStandardError "ngrok-err.log"
+          Start-Process -FilePath ".\ngrok\ngrok.exe" -ArgumentList "tcp 3389 --log=stdout" -RedirectStandardOutput "ngrok.log"
           Start-Sleep -s 15
-
-      - name: Show tunnel address
-        run: |
-          $tunnels = Invoke-RestMethod http://localhost:4040/api/tunnels
-          Write-Host $tunnels.tunnels[0].public_url
-
+          Get-Content ngrok.log | Select-String "url="
+      
       - name: Keep alive
         run: Start-Sleep -s 21600
