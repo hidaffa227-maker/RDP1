@@ -15,12 +15,11 @@ jobs:
           Add-LocalGroupMember -Group "Administrators" -Member "rdpuser"
           Add-LocalGroupMember -Group "Remote Desktop Users" -Member "rdpuser"
 
-      - name: Setup Cloudflare Tunnel
+      - name: Setup SSH Tunnel
         run: |
-          Invoke-WebRequest https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe -OutFile cloudflared.exe
-          Start-Process -FilePath ".\cloudflared.exe" -ArgumentList "tunnel --url tcp://localhost:3389 --no-autoupdate" -RedirectStandardOutput "cf.log" -RedirectStandardError "cf-err.log"
+          ssh -o StrictHostKeyChecking=no -R 3389:localhost:3389 serveo.net 2>&1 &
           Start-Sleep -s 15
-          Get-Content cf-err.log | Select-String "trycloudflare.com"
+          Write-Host "Connect to: serveo.net port shown above"
 
       - name: Keep alive
         run: Start-Sleep -s 21600
