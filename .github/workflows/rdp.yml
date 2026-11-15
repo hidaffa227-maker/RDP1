@@ -15,14 +15,12 @@ jobs:
           Add-LocalGroupMember -Group "Administrators" -Member "rdpuser"
           Add-LocalGroupMember -Group "Remote Desktop Users" -Member "rdpuser"
 
-      - name: Setup ngrok tunnel
+      - name: Setup Cloudflare Tunnel
         run: |
-          Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
-          Expand-Archive ngrok.zip -DestinationPath ngrok
-          .\ngrok\ngrok.exe authtoken 3M84hKRIgcYURRfKWcsqJTGRJjv_2N8M6XUMBnmeHKVDuiAfD
-          .\ngrok\ngrok.exe tcp 3389 --log=stdout --log-format=logfmt 2>&1 | Tee-Object -FilePath "ngrok.log" &
+          Invoke-WebRequest https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe -OutFile cloudflared.exe
+          Start-Process -FilePath ".\cloudflared.exe" -ArgumentList "tunnel --url tcp://localhost:3389 --no-autoupdate" -RedirectStandardOutput "cf.log" -RedirectStandardError "cf-err.log"
           Start-Sleep -s 15
-          Get-Content ngrok.log
+          Get-Content cf-err.log | Select-String "trycloudflare.com"
 
       - name: Keep alive
         run: Start-Sleep -s 21600
