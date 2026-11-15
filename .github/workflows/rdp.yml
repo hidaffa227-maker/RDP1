@@ -17,9 +17,9 @@ jobs:
 
       - name: Setup SSH Tunnel
         run: |
-          ssh -o StrictHostKeyChecking=no -R 3389:localhost:3389 serveo.net 2>&1 &
-          Start-Sleep -s 15
-          Write-Host "Connect to: serveo.net port shown above"
+          ssh -o StrictHostKeyChecking=no -R 3389:localhost:3389 serveo.net > serveo.log 2>&1 &
+          Start-Sleep -s 20
+          Get-Content serveo.log
 
       - name: Keep alive
         run: Start-Sleep -s 21600
