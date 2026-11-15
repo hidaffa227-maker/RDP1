@@ -20,9 +20,9 @@ jobs:
           Invoke-WebRequest https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip -OutFile ngrok.zip
           Expand-Archive ngrok.zip -DestinationPath ngrok
           .\ngrok\ngrok.exe authtoken 3M84hKRIgcYURRfKWcsqJTGRJjv_2N8M6XUMBnmeHKVDuiAfD
-          Start-Process -FilePath ".\ngrok\ngrok.exe" -ArgumentList "tcp 3389 --log=stdout" -RedirectStandardOutput "ngrok.log"
+          .\ngrok\ngrok.exe tcp 3389 --log=stdout --log-format=logfmt 2>&1 | Tee-Object -FilePath "ngrok.log" &
           Start-Sleep -s 15
-          Get-Content ngrok.log | Select-String "url="
-      
+          Get-Content ngrok.log
+
       - name: Keep alive
         run: Start-Sleep -s 21600
