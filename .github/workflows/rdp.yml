@@ -22,7 +22,7 @@ jobs:
           .\ngrok\ngrok.exe authtoken 3M84hKRIgcYURRfKWcsqJTGRJjv_2N8M6XUMBnmeHKVDuiAfD
           Start-Process .\ngrok\ngrok.exe -ArgumentList "tcp 3389" -NoNewWindow
 
-            - name: Show tunnel address
+      - name: Show tunnel address
         run: |
           Start-Sleep -s 10
           Invoke-RestMethod http://localhost:4040/api/tunnels | ConvertTo-Json -Depth 5
